@@ -27,13 +27,16 @@ function wp_eh_error_catch_error()
         }
 
         echo '<br> ';
+        echo '<br> ';
         echo esc_html($th->getMessage());
         echo '<br> ';
         echo '<br> ';
         echo esc_html($th->getLine() . ' on ' . $th->getFile());
         echo '<br> ';
-        echo '<br> ';
-        echo esc_html($th->getTraceAsString());
+
+        foreach ($th->getTrace() as $trace) {
+            var_dump($trace);
+        }
 
         die;
     });
