@@ -2,44 +2,26 @@
 
 /**
  * Plugin Name: WordPress Exception Handler
- * Description: Exception Handler for Wordpress
+ * Description: Exception Handler for WordPress
  * Version: 0.0.1
  * Author: Mohan Raj <pream1990@gmail.com>
  */
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 function wp_eh_error_catch_error()
 {
-    set_error_handler(function ($err_severity, $err_msg, $err_file, $err_line) {
-        new ErrorException($err_msg, 0, $err_severity, $err_file, $err_line);
-    });
+    $whoops = new \Whoops\Run();
 
-    set_exception_handler(function ($th) {
-        if (isset($_REQUEST['action'])) {
-            wp_send_json_error(array(
-                'code' => $th->getCode(),
-                'message' => $th->getMessage(),
-                'file' => $th->getFile(),
-                'line' => $th->getLine(),
-                'trace' => $th->getTrace()
-            ), 500);
+	if (defined('DOING_AJAX') && DOING_AJAX) {
+    	$whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler());
+	} else {
+    	$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
+	}
 
-            die;
-        }
+    $whoops->register();
 
-        echo '<br> ';
-        echo '<br> ';
-        echo esc_html($th->getMessage());
-        echo '<br> ';
-        echo '<br> ';
-        echo esc_html($th->getLine() . ' on ' . $th->getFile());
-        echo '<br> ';
-
-        foreach ($th->getTrace() as $trace) {
-            var_dump($trace);
-        }
-
-        die;
-    });
+    return;
 }
 
-add_action('admin_init', 'wp_eh_error_catch_error');
+wp_eh_error_catch_error();

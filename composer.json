@@ -1,0 +1,6 @@
+{
+	"name": "praem90/wp-exception-handler"
+    "require": {
+        "filp/whoops": "^2.14"
+    }
+}
