@@ -14,7 +14,7 @@ function wp_eh_error_catch_error()
     $whoops = new \Whoops\Run();
 
 	if (defined('DOING_AJAX') && DOING_AJAX) {
-    	$whoops->pushHandler(new \Whoops\Handler\JsonResponseHandler());
+    	$whoops->pushHandler((new \Whoops\Handler\JsonResponseHandler())->addTraceToOutput(true));
 	} else {
     	$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
 	}
